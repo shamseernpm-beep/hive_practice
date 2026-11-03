@@ -1,24 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:practice_hive/screen.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-class Login extends StatefulWidget {
-  // ignore: prefer_const_constructors_in_immutables
-  Login({super.key});
+class Last extends StatefulWidget {
+  const Last({super.key});
 
   @override
-  State<Login> createState() => _LoginState();
+  State<Last> createState() => _LastState();
 }
 
-class _LoginState extends State<Login> {
-  final username = TextEditingController();
-  final ageController = TextEditingController();
+class _LastState extends State<Last> {
+  late Box studentBox;
 
   @override
-  void dispose() {
-    username.dispose();
-    ageController.dispose();
-    super.dispose();
+  void initState() {
+    super.initState();
+    studentBox = Hive.box("students");
   }
 
   @override
@@ -26,40 +22,32 @@ class _LoginState extends State<Login> {
     return Scaffold(
       body: Column(
         children: [
-          Center(child: Text("form")),
-          SizedBox(height: 100),
-          TextField(
-            controller: username,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Enter your name",
-            ),
-          ),
           SizedBox(height: 30),
-          TextField(
-            controller: ageController,
-            decoration: InputDecoration(
-              border: OutlineInputBorder(),
-              hintText: "Enter your age",
-            ),
-          ),
-          SizedBox(height: 50),
-          ElevatedButton(
-            onPressed: () async {
-              Map<String, dynamic> student = {
-                "name": username.text,
-                "age": int.tryParse(ageController.text) ?? 0,
-              };
-              final box = Hive.box("students");
-              await box.add(student);
-              if (mounted) {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => Screen()),
+          Expanded(
+            child: ValueListenableBuilder(
+              valueListenable: studentBox.listenable(),
+              builder: (context, box, child) {
+                final students = box.values.toList();
+
+                if (students.isEmpty) {
+                  return Center(child: Text("no students"));
+                }
+                return ListView.builder(
+                  itemCount: students.length,
+                  itemBuilder: (context, index) {
+                    final student = students[index];
+
+                    return Card(
+                      child: ListTile(
+                        leading: Icon(Icons.person),
+                        title: Text("${student['name']}"),
+                        subtitle: Text("${student['age']}"),
+                      ),
+                    );
+                  },
                 );
-              }
-            },
-            child: Text("Submit"),
+              },
+            ),
           ),
         ],
       ),

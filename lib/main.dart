@@ -1,26 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
-import 'package:hive_flutter/adapters.dart';
-
-import 'login.dart';
+import 'screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Hive.initFlutter();
   await Hive.openBox("students");
+
   runApp(Myapp());
 }
 
 class Myapp extends StatelessWidget {
-  Myapp({super.key});
+  const Myapp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: "practice",
-      home: Login(),
-      debugShowCheckedModeBanner: false,
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: Screen());
   }
 }

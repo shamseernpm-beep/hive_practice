@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:practice_hive/login.dart';
 
 class Screen extends StatefulWidget {
   const Screen({super.key});
@@ -9,46 +10,54 @@ class Screen extends StatefulWidget {
 }
 
 class _ScreenState extends State<Screen> {
-  late Box StudentsBox;
+  final username = TextEditingController();
+  final ageController = TextEditingController();
 
   @override
-  void initState() {
-    super.initState();
-    StudentsBox = Hive.box("students");
+  void dispose() {
+    username.dispose();
+    ageController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Padding(
-        padding: const EdgeInsets.all(20),
+      body: Center(
         child: Column(
           children: [
-            Expanded(
-              child: ValueListenableBuilder(
-                valueListenable: StudentsBox.listenable(),
-                builder: (context, box, child) {
-                  final students = box.values.toList();
-
-                  if (students.isEmpty) {
-                    return Center(child: Text("no students add "));
-                  }
-                  return ListView.builder(
-                    itemCount: students.length,
-                    itemBuilder: (context, index) {
-                      final student = students[index];
-
-                      return Card(
-                        child: ListTile(
-                          leading: Icon(Icons.person),
-                          title: Text('${student["name"]}'),
-                          subtitle: Text('${student['age']}'),
-                        ),
-                      );
-                    },
-                  );
-                },
+            TextField(
+              controller: username,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "enter your name",
               ),
+            ),
+            SizedBox(height: 30),
+            TextField(
+              controller: ageController,
+              decoration: InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: "enter your age",
+              ),
+            ),
+            SizedBox(height: 50),
+            ElevatedButton(
+              onPressed: () async {
+                Map<String, dynamic> student = {
+                  'name': username.text,
+                  'age': int.tryParse(ageController.text) ?? 0,
+                };
+                final box = Hive.box("students");
+                await box.add(student);
+                if (mounted) {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => Last()),
+                  );
+                }
+              },
+              child: Text("submit"),
             ),
           ],
         ),
