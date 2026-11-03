@@ -30,7 +30,7 @@ class _LastState extends State<Last> {
                 final students = box.values.toList();
 
                 if (students.isEmpty) {
-                  return Center(child: Text("no students add yet"));
+                  return Center(child: Text("no students added"));
                 }
                 return ListView.builder(
                   itemCount: students.length,
