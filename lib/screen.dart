@@ -30,7 +30,7 @@ class _ScreenState extends State<Screen> {
               controller: username,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: "enter your name",
+                hintText: "enter  name",
               ),
             ),
             SizedBox(height: 30),
@@ -52,6 +52,7 @@ class _ScreenState extends State<Screen> {
                 await box.add(student);
                 if (mounted) {
                   Navigator.push(
+                    // ignore: use_build_context_synchronously
                     context,
                     MaterialPageRoute(builder: (context) => Last()),
                   );
