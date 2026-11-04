@@ -30,7 +30,7 @@ class _ScreenState extends State<Screen> {
               controller: username,
               decoration: InputDecoration(
                 border: OutlineInputBorder(),
-                hintText: "enter name",
+                hintText: "enter your name",
               ),
             ),
             SizedBox(height: 30),
